@@ -1,0 +1,117 @@
+#include <iostream>
+using namespace std;
+class InfToPostf{
+public:
+string Inf;
+string PostF;
+  
+  
+InfToPostf(){
+cout<<"Enter Infix String:\n";
+getline(cin, Inf);
+}
+  
+~InfToPostf(){
+}
+  
+string convertToPostFix(string exp);
+  
+void getInf(string inf){
+Inf = inf;
+}
+void showInfix(){
+cout<<"Infix Expression: "<<Inf<<endl;
+}
+void showPostFix(){
+cout<<"PostFix Expression: ";
+for(char x: PostF){
+cout<<x<<" ";
+}
+cout<<endl;
+}
+bool checkOperator(char symbol);
+bool checkOperand(char symbol);
+bool precedence(char symbol1, char symbol2);
+int checkPrec(char symbol);
+  
+};
+bool checkOperator(char x){
+if(x=='+' || x=='-' || x=='*' || x=='/')
+return true;
+return false;
+}
+bool checkOperand(char x){
+if(isdigit(x) || isalpha(x))
+return true;
+   return false;
+}
+  
+  
+int checkPrec(char x){
+if(x == '*' || x == '/')
+return 1;
+else if(x == '+' || x == '-')
+return 0;
+else
+return -1;
+}
+bool precedence(char x, char y){
+if(checkPrec(x) <= checkPrec(y))
+return true;
+return false;
+}
+string convertToPostFix(string infix){
+string posf;
+  
+stack<char> stk;
+  
+   for(int i = 0;i< infix.length();i++) {
+
+       if(checkOperator(infix[i]))
+       {
+           while(!stk.empty() && stk.top() != '(' && precedence(stk.top(),infix[i]))
+           {
+               posf+= stk.top();
+               stk.pop();
+           }
+           stk.push(infix[i]);
+       }
+      
+       else if(checkOperand(infix[i]))
+       {
+           posf +=infix[i];
+       }
+
+       else if (infix[i] == '(')
+       {
+           stk.push(infix[i]);
+       }
+
+       else if(infix[i] == ')')
+       {
+           while(!stk.empty() && stk.top() != '(') {
+               posf += stk.top();
+               stk.pop();
+           }
+           stk.pop();
+       }
+   }
+
+   while(!stk.empty()) {
+       posf += stk.top();
+       stk.pop();
+   }
+
+return posf;
+}
+
+int main()
+{
+InfToPostf infToPostF;
+infToPostF.PostF = convertToPostFix(infToPostF.Inf);
+infToPostF.showInfix();
+cout<<endl;
+infToPostF.showPostFix();
+
+return 0;
+}
