@@ -1,0 +1,77 @@
+#include <iostream>
+using namespace std;
+#define size 4 //the number of objects in an ArrayList
+class stack
+{
+    int data[size];
+    int top;
+public:
+    stack()
+    {
+        top = -1;
+    }
+    void push(); //add number
+    void pop(); //remove number
+    void display(); //display number(s)
+};
+
+//push means to enter number into the stack
+void stack::push()
+{
+    if (top == size - 1)
+    {
+        cout << "\nStack is full";
+        return;
+    }
+    else
+    {
+        top++;//increment function
+        cout << "Enter Data: ";
+        cin >> data[top];
+    }
+}
+
+//Pop means to remove the number from the stack
+void stack::pop()
+{
+    if (top == -1)
+        cout << "\nStack is empty"; //This will return if there are no other numbers to remove
+    else
+    {
+        cout << data[top] << "deleted " << endl;
+        top--;//decrement function
+    }
+}
+
+//Display will show the data entered
+void stack::display()
+{
+    int t = top;
+    while (t >= 0)//This will cause the data to show or nothing if nothing is left to pop
+    {
+        cout << data[t] << endl;
+        t--; //decrement function
+    }
+}
+
+//driver
+void main()
+{
+    stack st; //st is abbreviation for stack
+    int ch=0; //originally int ch; //IDE suggested to initialize
+    do
+    {
+        cout << "Choose one of the following options:\n\n1. Push\n2. Pop\n3. Display \n4. Quit\n\n Please Enter Choice(1-4) ";
+        cin >> ch;
+        
+        switch (ch)
+        {
+        case 1: st.push(); //add the number to stack
+            break;
+        case 2: st.pop(); //deletes the number from stack
+            break;
+        case 3: st.display(); //displays all the numbers in the stack
+        }
+
+    } while (ch != 4); //Automatically closes the window
+}
