@@ -1,0 +1,94 @@
+#include<iostream>
+using namespace std;
+
+//using structs to create the node
+//structs make it easier to apply the variable in the program
+struct node
+{
+    int data; //data is going to be an integer
+    node* next; /*A Node is a data structure that stores a value that can be of any data type and has a
+    pointer to another node*/
+    
+    //next is the next number in the sequence
+};
+
+class stack
+{
+    node* top; //pointer
+public:
+    stack()
+    {
+        top = NULL; //no value //empty value
+    }
+    void push(); //add number
+    void pop(); //remove number
+    void display(); //display all the numbers in the stack, if any
+    ~stack(); //destructor function
+};
+
+//add number to stack
+void stack::push()
+{
+    node* temp; //temporary placeholder
+    temp = new node; //new node is the new value that will be entered
+    cout << "Enter data: ";
+    cin >> temp->data; //input data
+    temp->next = top; //next data value
+    top = temp;
+}
+
+//Deleting data from stack
+void stack::pop()
+{
+    if (top != NULL)
+    {
+        node* temp = top;
+        top = top->next;
+        cout << temp->data << "Number deleted";
+        delete temp;
+    }
+    else
+        cout << "Stack is empty";
+}
+
+//Displaying all number in the stack
+void stack::display()
+{
+    node* temp = top;
+    while (temp != NULL)//The stack must have something to display
+    {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+}
+
+stack::~stack() //Will destroy all objects in the stack
+{
+    while (top != NULL)
+    {
+        node* temp = top;
+        top = top->next;
+        delete temp;
+    }
+}
+
+//Driver
+void main()
+{
+    stack st;
+    char ch;
+    do
+    {
+        cout << "Stack options:\n\n1 Push\n2 Pop\n3 Display\n4 Quit\n\n";
+        cin >> ch;
+        switch (ch)
+        {
+        case '1': st.push(); //add
+            break;
+        case '2': st.pop(); //delete
+            break;
+        case '3': st.display(); //display
+            break;
+        }
+    } while (ch != '4'); //Quit
+}
