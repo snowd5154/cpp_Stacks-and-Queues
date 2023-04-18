@@ -1,0 +1,222 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+// Tree Interface
+//All classes will use the variables
+struct node
+{
+	double value;
+	node* left;
+	node* right;
+};
+
+class BinarySearchTree
+{
+	//Private cannot be altered by anyone other than the programmer
+private:
+	node* root; //pointer //gives value to the root
+	int size;
+	int leafCount;
+	int height;
+
+	void addValue(node*&, double); //pointer //overload
+	bool contain(node*, double);//pointer
+	void inorderCopyValues(node*, vector <double>&); //overload
+	void locateLeafNode(node* root, int); //pointer
+
+	//Public is made available to anyone who uses the program
+public:
+	BinarySearchTree();
+	void insert(double); //adding number to tree
+	bool search(double); //bool--whether the value is double or not //searching
+	void inorder(vector <double>&); //inorder means placing the values in order they are inputted
+	int getSize(); //size of binary tree
+	int getLeafCount(); //total leaves
+	int getHeight(); //height of tree
+};
+
+// Constructor
+BinarySearchTree::BinarySearchTree()
+{
+	root = NULL; //no value
+	size = 0;
+	leafCount = 0;
+	height = 0;
+}
+
+// Adding value method
+void BinarySearchTree::addValue(node*& root, double val)
+{
+	if (root == NULL)
+	{
+		node* temp = new node;
+		temp->value = val;
+		temp->left = NULL;
+		temp->right = NULL;
+		root = temp;
+
+		//adding size with increment function
+		size++;
+	}
+	else if (val < root->value)
+	{
+		addValue(root->left, val);
+	}
+	else
+	{
+		addValue(root->right, val);
+	}
+}
+
+//The insert method below will call the add value method
+void BinarySearchTree::insert(double val)
+{
+	addValue(root, val);
+}
+
+
+//Contain method
+bool BinarySearchTree::contain(node* root, double target)//target is a number
+{
+	if (root == NULL)
+	{
+		cout << "The value " << target << " was not found in the tree" << endl; //If nothing was entered
+		return false;
+	}
+	else if (target == root->value)
+	{
+		cout << "The value " << target << " was located" << endl;
+		return true;
+	}
+	else if (target < root->value)
+	{
+		contain(root->left, target);
+	}
+	else
+	{
+		contain(root->right, target);
+	}
+}
+
+//Search method will invoke the contain method
+bool BinarySearchTree::search(double target)
+{
+	return contain(root, target);
+}
+
+//In order to apply the copy values method, we must traverse the tree
+//We will copy the value into the vector
+//This function will be used by the public member method in order
+
+//Traversing the tree
+void BinarySearchTree::inorderCopyValues(node* root, vector <double>& list)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+
+	inorderCopyValues(root->left, list);
+	list.push_back(root->value);
+	inorderCopyValues(root->right, list);
+}
+void BinarySearchTree::inorder(vector <double>& list)
+{
+	inorderCopyValues(root, list);
+}
+
+
+//Method to return the total number of nodes
+int BinarySearchTree::getSize()
+{
+	return size;
+}
+
+// Method used to locate leaf nodes in our tree
+/*Note we have modified the method to now also support with finding the max height our tree
+each time it reaches a leaf node it counts the number of steps or levels*/
+
+void BinarySearchTree::locateLeafNode(node* root, int currentHeight)
+{
+
+	//Base case in the case of the root being the node which only has one child
+	/*Since the other condition only stops at leaf nodes, we also need to set a
+	stop for when a parent points us to NULL*/
+	if (root == NULL)
+	{
+		return;
+	}
+
+	//Checks if current node has no children
+	if (root->left == NULL && root->right == NULL)
+	{
+		//Updating our count
+		//increment operator
+		leafCount++;
+
+		//Condition statement to get our maximum height
+		/*Each time we reach a leaf node we are counting how many steps it took to
+		get there from the root*/
+		if (currentHeight > height)
+		{
+			height = currentHeight;
+		}
+
+		return;
+	}
+
+	//Traverses down the tree from left to right
+	locateLeafNode(root->left, currentHeight + 1);
+	locateLeafNode(root->right, currentHeight + 1);
+}
+int BinarySearchTree::getLeafCount()//total number of leaves
+{
+	leafCount = 0; //Reset to zero, in case this is called multiple times
+	locateLeafNode(root, 1);
+	return leafCount;
+}
+int BinarySearchTree::getHeight()//height of tree
+{
+	height = 0;
+	locateLeafNode(root, 1);
+	return height;
+}
+
+//driver
+int main()
+{
+	BinarySearchTree tree; //variable
+	vector <double> treeList; //formatting the vector
+
+	//adding values
+	tree.insert(14);
+	tree.insert(12);
+	tree.insert(20);
+	tree.insert(19);
+	tree.insert(10);
+	tree.insert(13);
+	tree.insert(8);
+
+	//searching for values
+	tree.search(10);
+	tree.search(23);
+	tree.search(20);
+
+	//Listing values in the trees
+	tree.inorder(treeList);
+
+	cout << "\nPrinting our tree list:" << endl << endl;
+	for (int x = 0; x < treeList.size(); x++)
+	{
+		cout << treeList[x] << " ";
+	}
+	cout << endl << endl;
+
+	cout << "The total number of node/s is: " << tree.getSize() << endl;
+	cout << "The total number of leaf node(s): " << tree.getLeafCount() << endl;
+	cout << "The height of our tree is: " << tree.getHeight() << endl;
+	return 0;
+}
